@@ -23,6 +23,7 @@ export default function ScanPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ResultData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | Blob | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -72,6 +73,9 @@ export default function ScanPage() {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
         setImageSrc(dataUrl);
+        canvas.toBlob((blob) => {
+          if (blob) setImageFile(blob);
+        }, "image/jpeg", 0.8);
         stopCamera();
       }
     }
@@ -81,6 +85,7 @@ export default function ScanPage() {
     const file = e.target.files?.[0];
     if (file) {
       setError(null);
+      setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setImageSrc(reader.result as string);
@@ -92,6 +97,7 @@ export default function ScanPage() {
 
   const retakeImage = () => {
     setImageSrc(null);
+    setImageFile(null);
     setResult(null);
     startCamera();
   };
@@ -102,12 +108,15 @@ export default function ScanPage() {
     setError(null);
 
     try {
-      // Convert base64 to blob
-      const res = await fetch(imageSrc);
-      const blob = await res.blob();
+      let currentBlob = imageFile;
+      if (!currentBlob) {
+        // Convert base64 to blob fallback
+        const res = await fetch(imageSrc);
+        currentBlob = await res.blob();
+      }
       
       const formData = new FormData();
-      formData.append("image", blob, "scan.jpg");
+      formData.append("image", currentBlob, "scan.jpg");
 
       const response = await fetch("/api/predict", {
         method: "POST",
@@ -166,7 +175,7 @@ export default function ScanPage() {
           <div className="p-4 bg-white flex flex-col sm:flex-row justify-center gap-3">
             {!imageSrc ? (
               <>
-                <Button onClick={captureImage} size="lg" className="w-full sm:w-auto rounded-full gap-2">
+                <Button type="button" onClick={captureImage} size="lg" className="w-full sm:w-auto rounded-full gap-2">
                   <Camera className="w-5 h-5" />
                   Jepret Foto
                 </Button>
@@ -178,6 +187,7 @@ export default function ScanPage() {
                   onChange={handleFileUpload}
                 />
                 <Button 
+                  type="button"
                   onClick={() => fileInputRef.current?.click()} 
                   variant="outline" 
                   size="lg" 
@@ -190,6 +200,7 @@ export default function ScanPage() {
             ) : (
               <>
                 <Button 
+                  type="button"
                   onClick={analyzeImage} 
                   disabled={loading}
                   size="lg" 
@@ -199,6 +210,7 @@ export default function ScanPage() {
                   {loading ? "Menganalisis..." : "Analisis Sekarang"}
                 </Button>
                 <Button 
+                  type="button"
                   onClick={retakeImage} 
                   disabled={loading}
                   variant="outline" 
@@ -259,7 +271,7 @@ export default function ScanPage() {
                 </div>
               )}
 
-              <Button onClick={retakeImage} className="w-full gap-2 mt-4" variant="outline">
+              <Button type="button" onClick={retakeImage} className="w-full gap-2 mt-4" variant="outline">
                 <Camera className="w-4 h-4" /> Scan Daun Lain
               </Button>
             </CardContent>
