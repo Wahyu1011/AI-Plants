@@ -1,11 +1,17 @@
 import { prisma } from "@/lib/db";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { History as HistoryIcon, AlertCircle, Leaf } from "lucide-react";
 
 export const dynamic = 'force-dynamic';
 
 export default async function HistoryPage() {
-  let histories: any[] = [];
+  let histories: Array<{
+    id: string;
+    imageUrl: string;
+    confidence: number;
+    scanDate: Date;
+    disease: { name: string; plant: string; }
+  }> = [];
   let errorMsg = null;
 
   try {

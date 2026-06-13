@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Camera, Upload, RefreshCw, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Camera, Upload, RefreshCw, Loader2, AlertCircle, CheckCircle2, ScanLine, ShieldCheck } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -38,7 +38,7 @@ export default function ScanPage() {
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
       }
-    } catch (err) {
+    } catch {
       setError("Tidak dapat mengakses kamera. Pastikan izin telah diberikan.");
     }
   };
@@ -111,8 +111,8 @@ export default function ScanPage() {
       if (!response.ok) throw new Error("Gagal menganalisis gambar.");
       const data = await response.json();
       setResult(data);
-    } catch (err: any) {
-      setError(err.message || "Terjadi kesalahan.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
     } finally {
       setLoading(false);
     }
@@ -152,6 +152,7 @@ export default function ScanPage() {
                 )}
               </>
             ) : (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img src={imageSrc} alt="Captured" className="w-full max-h-[60vh] object-contain bg-black" />
             )}
             <canvas ref={canvasRef} className="hidden" />
