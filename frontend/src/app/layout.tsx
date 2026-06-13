@@ -7,7 +7,7 @@ import Link from "next/link";
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: "Equitas AI - Plant Disease Detector",
+  title: "AI Plants - Plant Disease Detector",
   description: "Deteksi penyakit tanaman secara real-time menggunakan AI",
 };
 
@@ -24,7 +24,7 @@ export default function RootLayout({
             <div className="container mx-auto flex h-16 items-center px-4 justify-between">
               <Link href="/" className="flex items-center gap-2 text-primary font-bold text-xl">
                 <Leaf className="w-6 h-6" />
-                Equitas AI
+                AI Plants
               </Link>
               <nav className="flex gap-4">
                 <Link href="/scan" className="text-sm font-medium hover:text-primary transition-colors">
@@ -44,7 +44,7 @@ export default function RootLayout({
           </main>
           <footer className="border-t bg-white py-6 mt-auto">
             <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} Equitas AI - Smart Farming Platform
+              &copy; {new Date().getFullYear()} AI Plants - Smart Farming Platform
             </div>
           </footer>
         </div>
