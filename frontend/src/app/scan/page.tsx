@@ -44,16 +44,22 @@ export default function ScanPage() {
   };
 
   const stopCamera = useCallback(() => {
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
-      setStream(null);
+    setStream((prevStream) => {
+      if (prevStream) {
+        prevStream.getTracks().forEach((track) => track.stop());
+      }
+      return null;
+    });
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
     }
-  }, [stream]);
+  }, []);
 
   useEffect(() => {
     startCamera();
     return () => stopCamera();
-  }, [stopCamera]); // start camera on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // start camera on mount only
 
   const captureImage = () => {
     if (videoRef.current && canvasRef.current) {
