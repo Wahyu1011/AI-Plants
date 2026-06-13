@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String        @id @default(uuid())
+  email     String        @unique
+  name      String
+  role      Role          @default(USER)
+  createdAt DateTime      @default(now())
+  scans     ScanHistory[]
+}
+
+model ScanHistory {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  diseaseId  String
+  disease    Disease  @relation(fields: [diseaseId], references: [id])
+  imageUrl   String
+  confidence Float
+  scanDate   DateTime @default(now())
+}
+
+model Disease {
+  id          String        @id @default(uuid())
+  plant       String
+  name        String
+  category    String
+  description String
+  createdAt   DateTime      @default(now())
+  treatments  Treatment[]
+  scans       ScanHistory[]
+}
+
+model Treatment {
+  id        String        @id @default(uuid())
+  diseaseId String
+  disease   Disease       @relation(fields: [diseaseId], references: [id])
+  content   String
+  type      TreatmentType
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum TreatmentType {
+  PENANGANAN
+  PENCEGAHAN
+}

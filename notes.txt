@@ -1,0 +1,3 @@
+minta README.txt, 
+
+deploy ke vercel  projectnya : https://vercel.com/wahyus-projects-592966a7
