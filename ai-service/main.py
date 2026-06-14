@@ -18,17 +18,36 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load Model
+# PENTING: Ganti isi list ini sesuai urutan Abjad (A-Z) dari nama folder penyakit dataset Anda!
+# Contoh: ["Bacterial_Blight", "Blast", "Brown_Spot", "Tungro"]
+CLASS_NAMES = ["Bacterial_Blight", "Blast", "Brown_Spot", "Tungro"]
+
+def build_model(num_classes):
+    from tensorflow.keras.applications import MobileNetV3Small
+    from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout
+    from tensorflow.keras.models import Model
+    
+    base_model = MobileNetV3Small(input_shape=(224, 224, 3), include_top=False, weights=None)
+    x = base_model.output
+    x = GlobalAveragePooling2D()(x)
+    x = Dense(512, activation='relu')(x)
+    x = Dropout(0.5)(x)
+    predictions = Dense(num_classes, activation='softmax')(x)
+    return Model(inputs=base_model.input, outputs=predictions)
+
+# Load Model (Bypass version issues by loading weights only)
 MODEL_PATH = "plant_disease_model.h5"
 if os.path.exists(MODEL_PATH):
-    model = tf.keras.models.load_model(MODEL_PATH)
-    print("AI Model loaded successfully.")
+    try:
+        model = build_model(len(CLASS_NAMES))
+        model.load_weights(MODEL_PATH)
+        print("AI Model loaded successfully using load_weights.")
+    except Exception as e:
+        model = None
+        print(f"Warning: Failed to load model weights. Error: {e}")
 else:
     model = None
     print("Warning: Model not found. Returning mock data.")
-
-# PENTING: Ganti isi list ini sesuai urutan Abjad (A-Z) dari nama folder penyakit dataset Anda!
-CLASS_NAMES = ["Padi_Blight", "Padi_Tungro", "Tomato_Early_Blight"]
 
 # Mock model configuration for development
 # In production, replace with: model = tf.keras.models.load_model("path/to/model.h5")
