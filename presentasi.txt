@@ -1,0 +1,82 @@
+========================================================================
+NASKAH PRESENTASI & DEMO: AI DETEKSI PENYAKIT TANAMAN
+========================================================================
+
+[TIPS UNTUK ANDA: Baca teks yang tidak di dalam kurung. Teks di dalam kurung siku [...] adalah instruksi aksi yang harus Anda lakukan di layar saat membaca naskah tersebut].
+
+---
+BAGIAN 1: PEMBUKAAN & PENGENALAN PROYEK
+---
+"Halo semuanya. Pada kesempatan kali ini, saya akan mendemonstrasikan sebuah aplikasi cerdas berbasis Artificial Intelligence yang kami kembangkan, yaitu Aplikasi Pendeteksi Penyakit Tanaman.
+
+Aplikasi ini bertujuan untuk membantu para petani atau penghobi tanaman mengenali penyakit pada daun, seperti padi atau tomat, hanya dengan mengambil foto daun tersebut. AI akan memproses gambarnya, mendiagnosa penyakitnya, dan langsung memberikan saran penanganan yang tepat."
+
+
+---
+BAGIAN 2: BEDAH STRUKTUR FILE (ARSITEKTUR)
+---
+[Aksi: Buka Code Editor (VS Code), perlihatkan susunan folder utama]
+
+"Mari kita lihat ke balik layar. Proyek ini dibangun menggunakan arsitektur modern yang memisahkan antara tampilan (Frontend) dan otak cerdasnya (Backend).
+
+Di sini bisa dilihat ada dua folder utama:
+Pertama, folder 'frontend'. Ini adalah antarmuka website kita yang dibangun menggunakan teknologi Next.js dan Tailwind CSS agar tampilannya cepat, responsif, dan elegan.
+
+Kedua, folder 'ai-service'. Ini adalah dapur pacunya. Kami menggunakan bahasa Python dengan framework FastAPI untuk menerima gambar dari website, dan menggunakan TensorFlow sebagai mesin kecerdasan buatannya."
+
+
+---
+BAGIAN 3: PROSES PELATIHAN AI (TRAINING)
+---
+[Aksi: Buka folder ai-service/training, perlihatkan file train.py dan Colab_Training_AI_Plants.ipynb]
+
+"Lalu, bagaimana AI ini bisa pintar? Kami melatihnya menggunakan ribuan dataset gambar daun dari Kaggle. 
+
+Untuk memudahkan proses pelatihan, kami telah membuat file khusus bernama 'Colab_Training_AI_Plants.ipynb'. Dengan file ini, proses pelatihan AI bisa dilakukan sepenuhnya di atas awan (cloud) menggunakan GPU gratis dari Google Colab.
+
+[Aksi: Buka browser, tunjukkan sekilas halaman Google Colab atau file notebook-nya]
+
+Di Colab, mesin membaca ribuan gambar daun sehat dan sakit, mempelajari pola bercaknya, dan akhirnya menghasilkan sebuah file 'otak AI' bernama 'plant_disease_model.h5'. File inilah yang menjadi nyawa dari aplikasi kita."
+
+
+---
+BAGIAN 4: INTEGRASI & DEPLOYMENT (HUGGING FACE)
+---
+[Aksi: Kembali ke VS Code, buka file ai-service/main.py]
+
+"Setelah otak AI (file .h5) ini jadi, kami memasukkannya ke dalam file 'main.py' ini. Di sini, program akan memuat beban cerdas (load_weights) tersebut ke dalam kerangka arsitektur MobileNetV3 agar siap menerima prediksi secara langsung.
+
+[Aksi: Buka browser, tunjukkan halaman Hugging Face Spaces Anda]
+
+Agar backend AI ini bisa diakses secara global 24 jam nonstop, kami melakukan deployment server menggunakan Docker ke platform Hugging Face Spaces. Bisa dilihat di layar, statusnya 'Running', yang artinya AI kita sudah aktif dan siap melayani permintaan dari manapun."
+
+
+---
+BAGIAN 5: DEMO APLIKASI UTAMA
+---
+[Aksi: Buka tab browser baru, akses website frontend Anda yang sudah online di Vercel]
+
+"Dan sekarang, mari kita lihat hasil akhirnya. Ini adalah tampilan antarmuka website kita yang sudah di-hosting di Vercel.
+
+[Aksi: Klik tombol Upload / Scan di website Anda, lalu pilih sebuah gambar daun padi yang terkena penyakit, misalnya bercak daun/Blight]
+
+Saya akan mengunggah sebuah foto daun padi yang tampak tidak sehat ini. Begitu saya klik deteksi, gambar ini akan dikirim melalui internet ke server Hugging Face kita. Di sana, AI TensorFlow akan membedah piksel gambar ini dan...
+
+[Aksi: Tunjukkan hasil prediksi yang muncul di layar]
+
+Voila! Sangat cepat. AI langsung mengenali bahwa ini adalah penyakit [Sebutkan nama penyakit yang muncul di layar]. 
+Hebatnya lagi, sistem kita tidak hanya mendiagnosa, tapi juga langsung mengeluarkan deskripsi penyakit, langkah pengobatan, dan cara pencegahan agar panen petani bisa terselamatkan."
+
+
+---
+BAGIAN 6: PENUTUP
+---
+[Aksi: Kembali ke halaman utama website]
+
+"Dengan adanya platform ini, diagnosis penyakit tanaman yang tadinya membutuhkan kehadiran pakar pertanian, kini bisa dilakukan dalam hitungan detik oleh siapa saja, hanya dengan berbekal smartphone dan koneksi internet.
+
+Ke depannya, kami berencana memperluas dataset ini agar bisa mengenali penyakit pada tanaman jagung, apel, dan komoditas penting lainnya.
+
+Terima kasih atas perhatiannya, sekian demonstrasi dari saya."
+
+========================================================================
