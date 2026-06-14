@@ -123,7 +123,10 @@ export default function ScanPage() {
         body: formData,
       });
 
-      if (!response.ok) throw new Error("Gagal menganalisis gambar.");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.error || "Gagal menganalisis gambar.");
+      }
       const data = await response.json();
       setResult(data);
     } catch (err: unknown) {
