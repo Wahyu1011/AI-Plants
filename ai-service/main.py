@@ -5,6 +5,7 @@ import numpy as np
 from PIL import Image
 import io
 import os
+import random
 # import tensorflow as tf
 
 app = FastAPI(title="Plant Disease AI Detector API", version="1.0.0")
@@ -47,6 +48,38 @@ mock_data = {
             "Sanitasi lahan",
             "Gunakan bibit sehat"
         ]
+    },
+    "Padi_Tungro": {
+        "plant": "Padi",
+        "disease": "Tungro",
+        "category": "Virus",
+        "description": "Daun menguning mulai dari ujung, tanaman menjadi kerdil, dan jumlah anakan berkurang.",
+        "treatment": [
+            "Cabut dan bakar tanaman yang terinfeksi",
+            "Kendalikan hama wereng hijau sebagai vektor",
+            "Gunakan insektisida sistemik jika serangan parah"
+        ],
+        "prevention": [
+            "Gunakan varietas tahan Tungro",
+            "Tanam serempak",
+            "Bersihkan gulma di sekitar area persawahan"
+        ]
+    },
+    "Padi_Blight": {
+        "plant": "Padi",
+        "disease": "Bacterial Leaf Blight (Kresek)",
+        "category": "Bakteri",
+        "description": "Muncul bercak kuning kelabu pada tepi daun yang menyebar ke seluruh bagian daun.",
+        "treatment": [
+            "Keringkan sawah sejenak (intermittent irrigation)",
+            "Gunakan bakterisida yang tepat",
+            "Hentikan pemupukan urea saat serangan aktif"
+        ],
+        "prevention": [
+            "Gunakan pupuk berimbang (jangan kelebihan Nitrogen)",
+            "Jarak tanam jangan terlalu rapat (sistem legowo)",
+            "Gunakan benih unggul tahan penyakit"
+        ]
     }
 }
 
@@ -69,9 +102,12 @@ async def predict_disease(image: UploadFile = File(...)):
     # For now, return mock data
     
     # Mock confidence
-    confidence = 96.72
+    confidence = random.uniform(85.0, 98.9)
     
-    data = mock_data["Tomato_Early_Blight"]
+    # Pilih hasil secara acak karena model belum di-training
+    mock_keys = list(mock_data.keys())
+    selected_key = random.choice(mock_keys)
+    data = mock_data[selected_key]
     
     return PredictionResponse(
         plant=data["plant"],
