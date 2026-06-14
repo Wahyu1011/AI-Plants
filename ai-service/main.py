@@ -6,7 +6,7 @@ from PIL import Image
 import io
 import os
 import random
-# import tensorflow as tf
+import tensorflow as tf
 
 app = FastAPI(title="Plant Disease AI Detector API", version="1.0.0")
 
@@ -17,6 +17,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Load Model
+MODEL_PATH = "plant_disease_model.h5"
+if os.path.exists(MODEL_PATH):
+    model = tf.keras.models.load_model(MODEL_PATH)
+    print("AI Model loaded successfully.")
+else:
+    model = None
+    print("Warning: Model not found. Returning mock data.")
+
+# PENTING: Ganti isi list ini sesuai urutan Abjad (A-Z) dari nama folder penyakit dataset Anda!
+CLASS_NAMES = ["Padi_Blight", "Padi_Tungro", "Tomato_Early_Blight"]
 
 # Mock model configuration for development
 # In production, replace with: model = tf.keras.models.load_model("path/to/model.h5")
@@ -98,16 +110,38 @@ async def predict_disease(image: UploadFile = File(...)):
     img_array = np.array(img) / 255.0
     img_array = np.expand_dims(img_array, axis=0)
 
-    # In a real scenario, model.predict(img_array) would be called here.
-    # For now, return mock data
-    
-    # Mock confidence
-    confidence = random.uniform(85.0, 98.9)
-    
-    # Pilih hasil secara acak karena model belum di-training
-    mock_keys = list(mock_data.keys())
-    selected_key = random.choice(mock_keys)
-    data = mock_data[selected_key]
+    if model is not None:
+        # Gunakan Otak AI Asli
+        predictions = model.predict(img_array)
+        class_idx = np.argmax(predictions[0])
+        confidence = float(np.max(predictions[0])) * 100
+        
+        # Ambil nama kunci dari CLASS_NAMES sesuai urutan prediksi AI
+        # Jika index prediksi lebih dari jumlah CLASS_NAMES, cegah error
+        if class_idx < len(CLASS_NAMES):
+            selected_key = CLASS_NAMES[class_idx]
+        else:
+            selected_key = CLASS_NAMES[0]
+            
+        # Jika ada di mock_data, ambil detail penanganannya
+        if selected_key in mock_data:
+            data = mock_data[selected_key]
+        else:
+            # Fallback jika nama klasifikasi tidak ada di kamus mock_data
+            data = {
+                "plant": "Unknown",
+                "disease": selected_key,
+                "category": "Unknown",
+                "description": "Tidak ada detail yang tersedia.",
+                "treatment": [],
+                "prevention": []
+            }
+    else:
+        # Jika belum ada file .h5, gunakan mock data acak
+        confidence = random.uniform(85.0, 98.9)
+        mock_keys = list(mock_data.keys())
+        selected_key = random.choice(mock_keys)
+        data = mock_data[selected_key]
     
     return PredictionResponse(
         plant=data["plant"],
