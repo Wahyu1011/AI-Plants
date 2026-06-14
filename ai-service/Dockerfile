@@ -1,5 +1,5 @@
-# Gunakan image Python resmi
-FROM python:3.9
+# Gunakan image Python resmi versi 3.10 (Sama seperti Google Colab)
+FROM python:3.10
 
 # Buat user non-root untuk keamanan (direkomendasikan oleh Hugging Face)
 RUN useradd -m -u 1000 user
